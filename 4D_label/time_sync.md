@@ -41,4 +41,18 @@
 | 时间最小二乘拟合法 | 将其中一个传感器的观测数据通过某种特定的拟合原则得到一个关 于时间的曲线，然后通过该 曲线得到与另一个传感器对应时刻的 数值，即可得到同一时刻两种传感器的数据配准 |                                                              |
 | 内插外推法         | 利用两个传感器帧上的时间标签，计算出时间差，然后通过包含有 运动信息的目标帧与时间差结合，对帧中每一个目标的位置进行推 算，推算出新的帧时各个目标的位置，并于原有的两帧之间建立新 的帧。 | 内插外推法适用于传感器间帧率不存在 倍数关系的情况，或者传感器有帧率不 稳定的情况 |
 
+### Nuscenes dataset sensor synchronization
+To achieve good cross-modality data alignment between the lidar and the cameras, the exposure of a camera is triggered when the top lidar sweeps across the center of the camera’s FOV. The timestamp of the image is the exposure trigger time; and the timestamp of the lidar scan is the time when the full rotation of the current lidar frame is achieved. Given that the camera’s exposure time is nearly instantaneous, this method generally yields good data alignment5. We perform motion compensation using the localization algorithm described below.
+
+lidar 扫描到摄像头fov的中心时出发摄像头曝光，图像的时间戳是曝光触发时刻的时间，lidar的时间戳是当前lidar frame 完成旋转的时间戳，考虑到摄像头的曝光时间几乎是瞬时完成的,这种方法通常产生好的数据对齐。使用以下定位算法进行运动补偿。
+
+#### 其他数据集的传感器对齐方式
+
+#### 同步方式涉及到激光雷达3D标注时的运动补偿
+
+3d 目标检测的真值一般还是通过激光雷达进行标注，但是激光雷达只能标注静态的目标，运动的目标需要进行跟踪物体，得到物体的motion state,
+激光雷达进行运动补偿，补偿的是ego-motion，t-1 时刻的ego-pose和 t timestamp 的ego-pose, 就可以算出静态物体的点云。
+
+自动驾驶车辆在行驶中可能遇到各种运动干扰，研究引入了3种运动级别的干扰：运动补偿、移动物体和运动模糊。车辆自身运动导致点云失真，通常使用运动补偿来纠正，但这可能引入噪声，称为运动补偿干扰。移动物体表示场景中某个物体在快速移动，可能导致其3D包围框内的点发生偏移。最后一种干扰是摄像头图像的运动模糊，是由于驾驶速度过快引起的。
+
 

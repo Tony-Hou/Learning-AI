@@ -131,10 +131,10 @@ class DepthNet(nn.Module):
         intrins = mats_dict['intrin_mats'][:, 0:1, ..., :3, :3]
         batch_size = intrins.shape[0]
         num_cams = intrins.shape[2]
-        ida = mats_dict['ida_mats'][:, 0:1, ...]
+        ida = mats_dict['ida_mats'][:, 0:1, ...]  # 代表图像数据增强
         sensor2ego = mats_dict['sensor2ego_mats'][:, 0:1, ..., :3, :]
         bda = mats_dict['bda_mat'].view(batch_size, 1, 1, 4,
-                                        4).repeat(1, 1, num_cams, 1, 1)
+                                        4).repeat(1, 1, num_cams, 1, 1)  # 代表bev 数据增强
         # camera 内参和外参进行concate  sensor2ego是外参
         mlp_input = torch.cat(
             [
@@ -507,5 +507,7 @@ def get_depth_loss(self, depth_labels, depth_preds):
 
 ```
 
+# 传入的参数shape:
+# sensor2ego_mat(1, 6, 4, 4), intrin_mat(1, 6, 4, 4), ida_mat(1, 6, 4, 4), bda_mat(1, 4, 4)
 
 [bevdepth](https://blog.csdn.net/weixin_42454048/article/details/130516392)

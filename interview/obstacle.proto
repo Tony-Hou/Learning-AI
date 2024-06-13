@@ -1,0 +1,701 @@
+syntax = "proto2";
+
+package ape;
+
+import "ape_common.proto";
+
+// last added: id = 125
+// next available id: 126
+message Obstacle {
+  enum Type {
+    UNKNOWN = 0;
+    UNKNOWN_MOVABLE = 1;
+    UNKNOWN_UNMOVABLE = 2;
+    CAR = 3;
+    VAN = 4;
+    TRUCK = 5;
+    BUS = 6;
+    CYCLIST = 7;
+    MOTORCYCLIST = 8;
+    TRICYCLIST = 9;
+    PEDESTRIAN = 10;
+    TRAFFICCONE = 11;
+    BARROWLIST = 12;
+    DONT_CARE = 13;
+    DONT_CARE_PED = 14;
+    DONT_CARE_CAR = 15;
+    DONT_CARE_OTH = 16;
+    CONFUSED = 17;
+    DUMMY_PERSON = 18;  // 假人
+
+    WHEEL = 20;                     // 车轮
+    CONSTRUCTION_VEHICLE = 21;      // 施工工程车
+    ANIMAL = 22;                    // 动物
+    SWEEPER_BRUSH = 23;             // 清洁车地刷
+    CARRIAGE = 24;                  // 公交车厢
+    TRACTOR = 25;                   // 牵引车头
+    TRAILER = 26;                   // 挂车
+  }
+
+  message TypeProb {
+    optional Type type = 1;
+    optional float prob = 2;
+  }
+
+  // 与标注Id严格对应
+  enum SubType {
+    SUB_UNKNOWN = -1;               // 无  -1
+
+    // CARs
+    CAR_MICRO = 1;                  // 2座微型车 1
+    CAR_HATCHBACK = 3;              // 两厢车  3
+    CAR_SEDAN = 4;                  // 三厢车  4
+    CAR_SPORTS = 5;                 // 跑车  5
+    SUV_SMALL = 6;                  // 小型SUV 6
+    SUV_LARGE = 7;                  // 中大型SUV 7
+    PICKUP = 26;                    // 皮卡  26
+
+    // TRUCK
+    TRUCK_SMALL = 8;                // 小货车  8
+    TRUCK_LARGE = 9;                // 大货车  9
+
+    // VAN
+    VAN_MINIVAN = 10;               // 微面  10
+    VAN_MPV = 11;                   // 商务车  11
+    VAN_MINIBUS = 12;               // 轻型客车  12
+
+    // BUS
+    BUS_SMALL = 13;                 // 小型巴士  13
+    BUS_LARGE = 14;                 // 单层大巴车  14
+    BUS_DOUBLE_DECKER = 15;         // 双层大巴车  15
+    BUS_DOUBLE_COATCH = 16;         // 多节大巴车  16
+
+    // PEDESTRIAN
+    ADULT_STAND = 17;               // 成人-站立 17
+    ADULT_SEATED = 18;              // 成人-坐姿 18
+    ADULT_BOWED = 19;               // 成人-蹲姿/弯腰  19
+    CHILD_STAND = 20;               // 儿童-站立 20
+    CHILD_SEATED = 21;              // 儿童-坐姿 21
+    CHILD_BOWED = 22;               // 儿童-蹲姿/弯腰  22
+
+    // TRICYCLIST
+    TRICYCLIST_LARGE = 23;          // 大型机动三轮车  23
+    TRICYCLIST_BOX = 24;            // 厢式三轮车  24
+    TRICYCLIST_NORMAL = 25;         // 普通人力/助力车 25
+
+    // BARRIER
+    BARRIER_CONE = 28;              // 普通锥筒
+    BARRIER_DELINEATOR = 29;        // 交通桩（金属柱、水泥柱）
+    BARRIER_WATER = 30;             // 水马
+    BARRIER_BUCKET = 31;            // 防撞桶
+    BARRIER_CEMENT = 32;            // 水泥隔离墩
+    BARRIER_STONE = 33;             // 石墩：（圆、椭圆、球形）
+    BARRIER_NO_PARKING_SIGN = 34;   // 停车指示牌（金属、塑料）
+    BARRIER_TEMPORARY_SIGN = 35;    // 临时交通指示牌：方形、圆形
+    BARRIER_TRIANGLE = 36;          // 三角警示牌
+    BARRIER_WARNING_LIGHT = 37;     // 路障频闪灯
+
+    // CONSTRUCTION_VEHICLE
+    CONSTRUCTION_VEHICLE_SHOVEL_TRUCK = 38; // 铲车
+    CONSTRUCTION_VEHICLE_CRANE = 39; // 吊车
+    CONSTRUCTION_VEHICLE_EXCAVATOR = 40; // 挖掘机
+    CONSTRUCTION_VEHICLE_ROAD_ROLLER = 41; // 压路机 
+    CONSTRUCTION_VEHICLE_LADDER = 42; // 云梯车
+    CONSTRUCTION_VEHICLE_LIFT_PLATFORM = 43; // 升降平台
+    CONSTRUCTION_VEHICLE_CONCRETE_MIXER_TRUCK = 44; // 混凝土搅拌车
+    CONSTRUCTION_VEHICLE_SEWAGE_TREATMENT_TRUCK = 45; // 污水处理车
+    CONSTRUCTION_VEHICLE_FORKLIFT = 46; // 叉车
+    CONSTRUCTION_VEHICLE_OTHER = 47; // 其他施工工程车
+
+    // ANIMALS
+    ANIMAL_CAT = 48;                // 猫
+    ANIMAL_DOG = 49;                // 狗
+    ANIMAL_OTHER = 50;              // 其他动物
+  }
+
+  message SubTypeProb {
+    optional SubType type = 1;
+    optional float prob = 2;
+  }
+
+  enum FineGrainedType {
+    FG_UNKNOWN = 0;
+    FG_TRUCK = 1;
+    FG_BUS = 2;
+    FG_VAN = 3;
+    FG_PICKUP = 4;
+    FG_SUV = 5;
+    FG_SEDAN = 6;
+    FG_MINICAR = 7;
+    FG_FIRE_FIGHTING = 8;
+    FG_AMBULANCE = 9;
+    FG_STREET_SPRINKLER = 10;
+    FG_REFUSE_COLLECTOR = 11;
+    FG_TRICYCLIST = 12;
+    FG_CYCLIST = 13;
+    FG_MOTORCYCLIST = 14;
+    FG_PEDESTRIAN = 15;
+    FG_TRAFFICCONE = 16;
+    FG_BARRIER_WATER = 17;
+    FG_BARRIER_TRIANGLE = 18;
+    FG_BARRIER_TEMPORARY_SIGN = 19;
+    FG_BARRIER_BUCKET = 20;
+    FG_BARRIER_COLUMN = 21;
+    FG_BARRIER_CEMENT_COLUMN = 22;
+    FG_BARRIER_STONE = 23;
+    FG_BARRIER_CEMENT = 24;
+    FG_MAX_OBJECT_TYPE = 25;
+  }
+
+  message FineGrainedTypeProb {
+    optional FineGrainedType type = 1;
+    optional float prob = 2;
+  }
+
+  // 与标注Id严格对应
+  enum SpecialVehicle {
+    SP_NORMAL_VEHv1 = 0;            // 普通车辆     0   （代表1-6以外的普通车辆）
+    SP_POLICE_CAR = 1;              // 警车         1
+    SP_POLICE_MOTO = 2;             // 警用摩托车   2
+    SP_FIRE_TRUCK = 3;              // 消防车       3
+    SP_AMBULANCE = 4;               // 救护车       4
+    SP_CONSTRUCTION_TRUCK = 5;      // 施工工程车   5   (deprecated)
+    SP_SCHOOL_BUS = 6;              // 校车         6
+    SP_BUS = 7;                     // 公交车       7    3.13新增
+    SP_NORMAL_VEHv2 = 8;            // 新普通车辆   8    3.13新增（代表1-7以外的普通车辆）
+    SP_ENGINEERING_RESCUE = 9;      // 工程抢险车   9
+    SP_SANITATION = 10;             // 环卫车       10
+    SP_NORMAL_VEHv3 = 11;           // 新普通车辆   11  (代表1-10以外的普通车辆)
+  }
+
+  // 与标注Id严格对应
+  enum ExtendType {
+    ET_CAT = 1;                     // 猫    1
+    ET_DOG = 2;                     // 狗    2
+    ET_CONE_DONWN = 3;              // 倒了的锥筒    3
+    ET_SPRINKLER_WORKING = 5;       // 在洒水的洒水车 5
+    ET_SPRINKLER_NOT_WORKING = 6;   // 没在洒水的洒水车 6
+    ET_SPRINKLER_UNKNOWN = 7;       // 不确定是否洒水的洒水车 7
+    ET_NONE_v1 = 8;                 // 非以上七类    8
+  }
+
+  enum Location {
+    LOC_UNKNOWN = -1;   // Unlabelled obstacle (location is unknown)
+    LOC_OTHERS = 1;     // Other obstacles
+    LOC_CIPO = 2;       // The closest in-path obstacle
+    LOC_R_PIHP = 3;     // Moving obstacles that are projected to enter
+                        // the host vehicle's path (right-side)
+    LOC_L_PIHP = 4;     // Moving obstacles that are projected to enter
+                        // the host vehicle's path (left-side)
+  }
+
+  // vehicle signal lights
+  message LightLabel {
+    enum Type {
+      ON = 0;
+      OFF = 1;
+      UNKNOWN = 2;
+      INVISIBLE = 3;
+    }
+    optional Type brake = 1;
+    optional Type left_turn = 2;
+    optional Type right_turn = 3;
+  }
+
+  message LightStatus {
+    optional float brake_visible = 1 [default = 0.0];
+    optional float brake_switch_on = 2 [default = 0.0];
+    optional float left_turn_visible = 3 [default = 0.0];
+    optional float left_turn_switch_on = 4 [default = 0.0];
+    optional float right_turn_visible = 5 [default = 0.0];
+    optional float right_turn_switch_on = 6 [default = 0.0];
+  }
+
+  message LightSignal {
+    enum Status {
+      UNKNOWN = -1;
+      OFF = 0;
+      ON = 1;
+      INVISIBLE = 2;
+    }
+    optional Status status = 1 [default = INVISIBLE];
+    optional float confidence = 2 [default = -1];
+    optional float visible_prob = 3 [default = -1];
+    optional float switch_on_prob = 4 [default = -1];
+    optional Status model_status = 5 [default = UNKNOWN];
+    optional string selected_sensor = 6 [default = "unknow"];
+  }
+
+  message LightColor {
+    enum Color {
+      ALL_OFF = -1;
+      RED_ON = 0;
+      YELLOW_ON = 1;
+      ALL_ON = 2;
+    }
+    optional Color color = 1 [default = ALL_OFF];
+  }
+
+  message Wheel {
+    optional int32 type = 1 [default = 4];    // 0~3: LF/LB/RF/RB
+                                              //   4: UNKNOWN
+    optional Box2D box = 2;
+    optional float confidence = 3 [default = 0.0];
+    optional Status is_occluded = 4 [default = UNKNOWN];
+    optional bool used_for_one_wheel = 5 [default = false];
+    optional bool used_for_multi_wheels = 6 [default = false];
+    optional float visibility = 7 [default = 0.0];
+    optional bool use_cutline_k = 8 [default = false];
+    optional float cutline_k = 9 [default = 0.0];
+    optional Point2D cutline_pts1 = 10;
+    optional Point2D cutline_pts2 = 11;
+  }
+
+  message ProjectWheels {
+    optional string sensor_name = 1;
+    repeated Wheel wheel = 2;
+  }
+
+  message VehicleOntoLineInfo {
+    enum Source {
+        UNKNOWN = 0;
+        TWODIMENSION = 1;
+        THREEDIMENSION = 2;
+    }
+    enum SideLane {
+        LEFT = 1;
+        RIGHT = 0;
+    }
+    optional Source source = 1;
+    optional SideLane side_lane = 2;
+    optional float lateral_dist = 3;
+    optional float final_lateral_dist = 4;
+  }
+
+  message GroundPoint {
+    optional int32 type = 1 [default = 4];    // 0~3: LF/LB/RF/RB
+                                              //   4: UNKNOWN
+    optional Point2D point = 2;
+  }
+
+  message ProjectedObject {
+    optional Box2D box = 1;
+    optional string camera_name = 2 [default = "UNKNOWN"];
+    optional bool box_in_refine = 3 [default = false];
+    optional bool box_is_refined = 4 [default = false];
+    optional Box2D virtual_camera_box = 5;
+    optional bool is_box_valid = 6 [default = false];
+    optional bool is_nms_suppressed = 7 [default = false];
+    optional bool is_occluded_suppressed = 8 [default = false];
+    optional bool appearance_check_state = 9 [default = true];
+    optional float appearance_check_filter_prob = 10 [default = 0.0];
+    optional LightSignal brake_signal = 11;
+    optional LightSignal left_turn_signal = 12;
+    optional LightSignal right_turn_signal = 13;
+    optional LightSignal double_flash_signal = 14;
+    optional Box2D virtual_camera_box_before_refine = 15;
+  }
+
+  // data mining type
+  enum DataMiningType {
+    DM_CORRECT = 0;
+    DM_DISLOCATION = 1;
+    DM_ERRORTYPE = 2;
+    DM_FP = 3;
+    DM_FN = 4;
+  }
+  // icafe labeling type
+  enum IcafeLabelType {
+    ICAFE_NORMAL = 0;
+    ICAFE_FP = 1;
+  }
+
+  enum WorkingState {
+    WS_NO = 0;
+    WS_YES = 1;
+    WS_UNKNOWN = 2;
+    WS_NOT_APPLICABLE = -1;
+  }
+
+  enum NonMotorizedIsMovable {
+    NOT_MOVABLE = 0;
+    IS_MOVABLE = 1;
+    POINTLESS_NON_MOTORIZED_MOVABLE = -1;
+  }
+
+  enum Profession {
+    CONSTRUCTOR_OR_CLEANER = 1;
+    POLICE = 2;
+    POINTLESS_PROFESSION = -1;
+  }
+
+  enum TrackState {
+    KEEP_BOX_TRACKED_NORMAL = 0;
+    DUMMY_BOX_FOR_NULL_DETECTIONS = -1;
+    ABANDON_BOX_MIN_INIT_HEIGHT = -2;
+    ABANDON_BOX_TRACKED_BUT_OCC = -3;
+    ABANDON_BOX_TRACKED_BUT_OCC_BY_BACKGROUND = -4;
+    ABANDON_BOX_TRACKED_BUT_OCC_BY_OBS = -5;
+    ABANDON_BOX_TRACKED_BUT_NOT_IN_ROI = -6;
+    ABANDON_BOX_TRACKED_BUT_PROJECT_CENTER_OUT = -7;
+    ABANDON_BOX_TRACKED_BUT_2D_COVER = -8;
+    ABANDON_BOX_TRACKED_BUT_FAR_TRUNCATED = -9;
+    ABANDON_BOX_TRACKED_BUT_BAD_3D = -10;
+    ABANDON_BOX_UNKNOWN = -11;
+  }
+
+  enum MotionState {
+    MOTION_UNKNOWN = 0;
+    MOVING = 1;
+    STATIONARY = 2;
+  }
+  
+  // meta
+  optional string label_mode = 75;
+  optional string sensor_name = 76;
+  optional string uuid = 83;
+
+  // basic information
+  optional int32 track_id = 1 [default = 0];                    // tracking id
+  optional Type type = 2 [default = UNKNOWN];                   // type of obstacle
+  optional SubType sub_type = 77 [default = SUB_UNKNOWN];       // sub-type of obstacle
+  optional FineGrainedType finegrained_type = 121 [default = FG_UNKNOWN];       // finegrained-type of obstacle
+  optional SpecialVehicle sp_vehicle = 81 [default = SP_NORMAL_VEHv1];  // special vehicle type
+  optional ExtendType extend_type = 82 [default = ET_NONE_v1];  // special vehicle type
+  optional Difficulty difficulty = 3 [default = NORMAL];        // 
+  optional Box2D box2d = 4;                                     // bbox in image
+  optional Point2D projected_center = 79;                       // projected_center in image
+  optional Box3D box3d = 5;                                     // bbox in camera coords
+  optional Box3D box3d_before_optimized_by_wheel = 113;         // bbox
+  optional Box3D box3d_after_optimized_by_wheel = 114;         // bbox
+  optional Box3D box3d_lidar = 72;                              // bbox in lidar coords
+  optional Box3D box3d_original = 73;                           // original bbox in lidar coords
+  optional Box3D box3d_adjusted = 78;                           // adjusted bbox in lidar coords
+  optional OccStatus is_occluded = 6 [default = OCC_UNKNOWN];   // occlusion
+  optional float occluded_prob = 70 [default = 0];
+  optional Status is_truncated = 7 [default = UNKNOWN];         // truncation
+  optional float confidence = 8 [default = 1.0];                // objectness
+  repeated TypeProb type_probs = 9;                             // candidate types with prob
+  repeated SubTypeProb sub_type_probs = 74;                     // candidate sub-types with prob
+  repeated FineGrainedTypeProb finegrained_type_probs = 123;    // candidate finegrained types with prob
+  optional Location location = 10 [default = LOC_UNKNOWN];      // location
+  optional DataMiningType dm_type = 80 [default = DM_CORRECT];  // data mining type
+  optional int32 id = 85 [default = 0];                         // obj id
+  optional IcafeLabelType icafe_label_type = 84 [default = ICAFE_NORMAL]; // icafe obstacle labeling type
+  optional WorkingState sp_is_working = 86 [default = WS_NOT_APPLICABLE]; // special vehicle's working status
+  optional NonMotorizedIsMovable is_movable = 87 [default = POINTLESS_NON_MOTORIZED_MOVABLE]; // non-motorized vehicle's movable status
+  optional Profession pedestrian_profession = 88 [default = POINTLESS_PROFESSION]; // pedestrian's profession
+
+  // fine-grained truncation, occlusion
+  optional CutOff2D cut_off_2d = 11;
+  optional CutOff3D cut_off_3d = 12;
+  optional bool left_visible = 13 [default = false];
+  optional float vis_line_offset = 14 [default = 0];
+
+  // 3D information
+  ////////////////////////////////////////////////////////////////
+  //                    8 | 1 | 2
+  //                 ^  ----a----
+  // AREA_ID    head |    |   |
+  //   and           |  7 d 0 b 3
+  //  FACES               |   |
+  //                    ----c----
+  //                    6 | 5 | 4
+  ////////////////////////////////////////////////////////////////
+  optional int32 area_id = 21 [default = 0];
+  optional float mid_line_offset = 22 [default = 0];    // offset of mid_line from
+                                                        // xmin in pixels.
+                                                        // set to 0 if area_id in
+                                                        // [1, 3, 5, 7]
+
+  // attributes
+  optional LightStatus light_status = 31;
+  optional Status door_open = 32 [default = UNKNOWN];
+  optional Status is_onroad = 33 [default = UNKNOWN];   // obstacle is on-road
+  optional LightLabel light_label = 34;
+  optional Tensor appearance_feature = 35;
+  optional LightSignal brake_signal = 36;
+  optional LightSignal left_turn_signal = 37;
+  optional LightSignal right_turn_signal = 38;
+  optional LightSignal double_flash_signal = 39;
+
+  // parts
+  repeated GroundPoint ground_point = 41;
+  repeated Wheel wheel = 42;
+  repeated Wheel vis_filtered_wheel = 115;
+
+  // motion
+  optional Point3D velocity = 51;
+  optional Point3D acceleration = 52;
+  optional bool velocity_converged = 53;
+  optional double tracking_time = 54;
+  optional double latest_tracked_time = 55;
+  optional bool is_position_optimized_by_wheel = 56;
+  optional bool is_orientation_optimized_by_wheel = 57;
+  optional bool is_depth_trucate_optimized_by_near_boundary = 58;
+
+  optional Status horizontal_vis = 61 [default = UNKNOWN];
+  optional Status vertical_vis = 62 [default = UNKNOWN];
+  optional Status bottom_occluded = 63 [default = UNKNOWN];
+
+  // tag
+  optional float sprinkler_conf = 71 [default = 0.0];
+
+  optional TrackState track_state = 89 [default = ABANDON_BOX_UNKNOWN];
+  optional MotionState motion_state = 90 [default = MOTION_UNKNOWN];
+
+  // camera_supplement
+  message CameraSupplement {
+    // !!!!corresponding to base::CameraObjectSupplement Define
+    optional Status is_onroad = 1 [default = UNKNOWN];
+    optional Status is_occluded = 2 [default = UNKNOWN];
+    optional Status is_truncated = 3 [default = UNKNOWN];
+    optional Status is_sprinkler = 4 [default = UNKNOWN];
+
+    enum BarrierType {
+      BR_OTHER = 0;
+      BR_CONE = 1;
+      BR_WATER_FILLED_BARRIER = 2;
+      BR_ANTI_COLLISION_BUCKET = 3;
+      BR_UNKNOWN = 5;
+    }
+    optional BarrierType barrier_type = 5 [default = BR_OTHER];
+
+    enum SpecialVehicleType {
+      SV_NONE = 0;
+      SV_POLICE_VEHICLE = 1;
+      SV_POLICE_MOTORCYCLE = 2;
+      SV_FIRE_ENGINE = 3;
+      SV_AMBULANCE = 4;
+      SV_ENGINEERING_VEHICLE = 5;     // 施工工程车
+      SV_SCHOOL_BUS = 6;              // 校车
+      SV_BUS = 7;                     // 公交车
+      SV_SPRINKLER = 8;               // 洒水车
+      MAX_OBJECT_TYPE = 9;
+    }
+    optional SpecialVehicleType sv_type = 6 [default = SV_NONE];
+    
+    enum SpecialVehicleStatus {
+      SV_UNKNOWN = -1;
+      SV_IDLE = 0;
+      SV_IN_OPERATION = 1;
+    }
+    optional SpecialVehicleStatus sv_status = 7 [default = SV_UNKNOWN];
+
+    optional Status is_3d_uncertain = 8 [default = UNKNOWN];
+
+    optional Status is_lane_refined = 9 [default = UNKNOWN];
+
+    enum SubtypeSizeRelation {
+      SUBTYPE_UNKNOWN = 0;
+      SUBTYPE_SIZE_CONSISTENT = 1;
+      SUBTYPE_SIZE_NOT_CONSISTENT = 2;
+      LIMITS_VIOLATION_SMALL = 3;
+      LIMITS_VIOLATION_LARGE = 4;
+    }
+    optional SubtypeSizeRelation subtype_size_relation = 10 [default = SUBTYPE_UNKNOWN];
+    
+    enum LocatedInLaneType {
+      LANE_TYPE_UNKNOWN = -10;
+      IN_OTHER_LEFT_LANE = -2;
+      IN_EGO_LEFT_LANE = -1;
+      IN_MAIN_LANE = 0;
+      IN_EGO_RIGHT_LANE = 1;
+      IN_OTHRT_RIGHT_LANE = 2;
+      IN_MERGED_ADJACENT_LANE = 10;
+    }
+    optional LocatedInLaneType located_in_lane_type = 11 [default = IN_OTHER_LEFT_LANE];
+
+    optional int32 lane_id = 12 [default = -1];
+    optional float onroad_prob = 13 [default = 0];
+    optional float occluded_prob = 14 [default = 0];
+    optional float truncated_prob = 15 [default = 0];
+    optional float sprinkler_prob = 16 [default = 0];
+    optional float barrier_prob = 17 [default = 0];
+    optional float is_3d_uncertain_prob = 18 [default = 0];
+    optional float height_ratio_pred = 19 [default = 0];
+    optional Point2D projected_center = 20;
+    optional bool on_use = 21 [default = false];
+    optional bool only_2d = 22 [default = false];
+    optional string sensor_name = 23;
+    optional double timestamp = 24;
+    optional int32 frame_id = 25 [default = -1];
+    optional int32 global_frame_id = 26 [default = -1];
+    optional Box2D box2d = 27; 
+    
+    message CameraRawObject {
+      optional Box2D box2d = 1;
+      optional Box3D box3d = 2;
+      optional float alpha = 3; 
+    }
+    optional CameraRawObject raw_object = 28;
+    
+    //!!!multi_camera_multi_stages_camera_raw_objects, todo(xxx), current not used, field_id 29 reversed
+
+    optional string camera_fusion_choose_sensor_name = 30;
+    optional Box2D projected_box = 31;
+    optional int32 local_track_id = 32;
+    optional Tensor pts8 = 33;
+    optional Box2D front_box = 34;
+    optional Box2D back_box = 35;
+    optional Tensor object_feature = 36;
+    optional float alpha = 37 [default = 0];
+    optional float truncated_horizontal = 38 [default = 0];
+    optional float truncated_vertical = 39 [default = 0];
+    optional Point3D local_center = 40;
+
+    enum VisualObjectType {
+      VO_CAR = 0;
+      VO_VAN = 1;
+      VO_BUS = 2;
+      VO_TRUCK = 3;
+      VO_BICYCLE = 4;
+      VO_TRICYCLE = 5;
+      VO_PEDESTRIAN = 6;
+      VO_TRAFFICCONE = 7;
+      VO_UNKNOWN_MOVABLE = 8;
+      VO_UNKNOWN_UNMOVABLE = 9;
+      VO_MAX_OBJECT_TYPE = 10;
+    }
+    optional VisualObjectType visual_type = 41 [default = VO_MAX_OBJECT_TYPE];
+    optional Tensor visual_type_probs = 42;
+    optional int32 area_id = 43;
+    optional Tensor visible_ratios = 44;
+    optional Tensor cut_off_ratios = 45;
+    optional Status occluded_status = 46;
+    optional Tensor afore_obstacles = 47;
+    repeated Wheel wheel = 48;
+    
+    enum ObstacleLaneType {
+      OTHER = 0;
+      CIPV = 1;
+      PIHP = 2;
+    }
+    optional ObstacleLaneType obstacle_lane_type = 49 [default = OTHER];
+    
+    enum AbnormalStatus {
+      AS_UNKNOWN = 0;
+      VELOCITYJUMP = 1;
+      POSITIONJUMP = 2;
+    }
+    optional AbnormalStatus abnormal_status = 50 [default = AS_UNKNOWN];
+    optional TrackState track_state = 51 [default = ABANDON_BOX_UNKNOWN];
+    repeated Point2D ground_touching_points = 52;
+    repeated Point3D trajectory_sets = 53;
+
+    optional bool appearance_check_state = 54 [default = true];
+
+    enum SuspectedType {
+      NONE = 0;
+      VIRTUAL_OBJECT = 1;
+      VIRTUAL_PED_ON_BUS = 2;
+    }
+    optional SuspectedType suspected_type = 55 [default = NONE];
+
+    // obstacle state info in supplement
+    optional Status is_movable = 56 [default = UNKNOWN];
+    optional Status is_seated = 57 [default = UNKNOWN];
+    optional Status is_door_open = 58 [default = UNKNOWN];
+
+    optional float movable_prob = 59 [default = 0];
+    optional float seated_prob = 60 [default = 0];
+    optional float door_open_prob = 61 [default = 0];
+
+    optional float appearance_check_filter_prob = 62 [default = 0];
+
+    repeated ProjectWheels sensor_wheel_map = 63;
+    optional VehicleOntoLineInfo vehicle_onto_line_info = 64;
+
+    // 2D Refine box attr
+    optional Box2D box2d_without_refine = 65;
+    optional float refine_score = 66;
+    optional float refine_iou = 67;
+    optional bool box_is_refined = 68 [default = false];
+
+    // infer object info
+    optional Point3D infer_center = 69;
+    optional Point3D infer_size = 70;
+    optional SubType infer_sub_type = 71 [default = SUB_UNKNOWN];
+    optional FineGrainedType infer_finegrained_type = 72 [default = FG_UNKNOWN];
+    
+    message TrafficconeInfo {
+      enum Source {
+        UNKNOWN = 0;
+        TWOD = 1;
+        TWODTOTHREED = 2;
+        THREED = 3;
+        LOCK = 4;
+      }
+      enum SideLane {
+          LEFT = 1;
+          RIGHT = 0;
+      }
+      optional int32 lane_id = 1;
+      optional SideLane side_lane = 2;
+      optional float lateral_dist = 3;
+      optional float ratio = 4;
+      optional Source source = 5;
+    }
+    optional TrafficconeInfo trafficcone_info = 73;
+  }
+  optional CameraSupplement camera_supplement = 91;
+
+  // camera_frame_header defined in camera_frame, donnot duplicate define it, reversed filed_id 92
+
+  optional Point3D direction = 93;
+  optional float theta_variance = 94;
+  optional Point3D center_uncertainty = 95;
+  // polygon, todo(xxx), reserve filed_id 96
+  optional Point3D size_variance = 97;
+  repeated float pedestrian_profession_probs = 98;
+  // parse type, todo(xxx), reserve filed_id 99
+  // parse_type_probs, todo(xxx),  reserve filed_id 100
+  // parse_type_agree, todo(xxx), reserve filed_id 101
+  optional Point3D velocity_uncertainty = 102;
+  optional float velocity_confidence = 103;
+  optional Point3D acceleration_uncertainty = 104;
+  
+  // road_state, todo(xxx), reserve filed_id 105
+  // car_light, todo(xxx), reserve filed_id 106
+  enum HeadingStatus {
+    FORWARD = 0;
+    BARKWARD = 1;
+    HD_UNKNOWN = 2;
+    MAX_HEADING_STATUS = 3;
+  }
+  optional HeadingStatus heading = 107;
+  repeated Point3D wheels_position = 108;
+  repeated Point3D depth_trucated_position = 109;
+  repeated Point3D free_space_position = 110;
+
+  enum RoadState {
+    SAME_ROAD_BEFORE_MAIN_CAR = 0;
+    RS_OTHER = 1;
+  }
+  optional RoadState road_state = 111;
+  optional bool is_dead_vehicle = 112 [default = false];
+
+  // obstacle state
+  optional Status is_movable_state = 116 [default = UNKNOWN];
+  optional Status is_seated_state = 117 [default = UNKNOWN];
+  optional Status is_door_open_state = 118 [default = UNKNOWN];
+  repeated ProjectedObject projected_object = 119;
+
+  optional bool able_to_pub = 120 [default = true];
+
+  optional Point3D model_velocity = 122;
+
+  enum ObjectNumberSuppressStragtegy {
+    NOT_SUPPRESSED = 0;
+    OCCLUSION_SUPPRESSED = 1;
+    NMS_2D_SUPPREESED = 2;
+    MAX_NUMBER_SUPPRESSED = 3;
+    FIXED_AREA_SUPPRESSED = 4;
+  }
+
+  // carlight color
+  optional LightColor light_color = 124;
+
+  optional ObjectNumberSuppressStragtegy suppress_strategy = 125;
+
+}

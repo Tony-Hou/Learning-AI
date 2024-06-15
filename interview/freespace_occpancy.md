@@ -23,6 +23,7 @@ negate：是否反转图像
 cooupied_thresh：占据阈值
 free_thresh：空闲阈值
 
+[bresenham](https://blog.csdn.net/u011341856/article/details/118788353)
 
 ### costmap_2d 
 由于占据栅格地图通常是单层结构，更适用于简单的路径规划功能，当机器人或无人车对于环境信息精确度要求不高时可以利用此地图进行规划，当规划模块对精度与安全性要求较高时，更好的选择是利用代价地图（CostMap）进行规划

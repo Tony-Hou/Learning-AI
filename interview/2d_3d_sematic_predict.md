@@ -1,6 +1,11 @@
 # 2D occupancy grid mapping 中怎么标记不规则物体和悬空物体的
 
-语义分割问题的边界怎么进行跟踪融合的
+### 语义分割存在的问题
+- freespace 边界预测不稳定，怎么解决这个问题，因为大多语义分割是对像素进行的分类，没有boundaries loss得监督，解决方法 [focus the entire loss function on the boundaries instead of weighting all pixel patches](file:///Users/linjie.hou/Documents/%E5%A4%9A%E8%A7%86%E5%9B%BE%E5%87%A0%E4%BD%95/stereo/freespace_googlenet.pdf)
+- 
+
+边界怎么进行跟踪融合的
+
 
 ## 2D 空间中的解决方法
 

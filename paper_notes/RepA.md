@@ -11,3 +11,7 @@
 表征对齐,从而提高生成质量。这种正则化技术不仅
 简单,还非常有效!
 ![image](https://github.com/user-attachments/assets/6cafe46c-961d-4a3a-a48c-e9524bb85146)
+
+
+# 启发
+最近也在思考生成仿真数据时，对于时序上存在的一致性
